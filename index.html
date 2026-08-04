@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MICHEZO — Vista o Movimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde-escuro:#2f3a1f;
+    --verde:#455a2c;
+    --terracota:#bd5b34;
+    --terracota-claro:#d97a4f;
+    --areia:#f2ead9;
+    --areia-clara:#faf6ec;
+    --tinta:#211c14;
+    --dourado:#d4a24c;
+    --branco:#ffffff;
+    --sombra: 0 12px 30px rgba(33,28,20,0.15);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--tinta);
+    background:var(--areia-clara);
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Anton',sans-serif;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    line-height:1.05;
+  }
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1240px;margin:0 auto;padding:0 24px;}
+  button{font-family:inherit;cursor:pointer;border:none;}
+
+  /* ===== Padrão gráfico assinatura: linhas de movimento africanas ===== */
+  .wax-pattern{
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 14px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 22px);
+  }
+  .zigzag-divider{
+    height:14px;
+    width:100%;
+    background:
+      linear-gradient(135deg, var(--terracota) 25%, transparent 25%) 0 0/16px 16px,
+      linear-gradient(-135deg, var(--terracota) 25%, transparent 25%) 0 0/16px 16px;
+    background-color:var(--areia-clara);
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar{
+    background:var(--verde-escuro);
+    color:var(--areia);
+    font-size:13px;
+  }
+  .topbar .container{
+    display:flex;justify-content:space-between;align-items:center;
+    height:38px;
+  }
+  .topbar-left{display:flex;gap:22px;align-items:center;}
+  .topbar-left span{display:flex;align-items:center;gap:6px;}
+  .topbar-social{display:flex;gap:14px;}
+  .topbar-social a{
+    width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.08);
+    transition:background .2s;
+  }
+  .topbar-social a:hover{background:var(--terracota);}
+  .flag{font-size:14px;}
+
+  /* ===== HEADER ===== */
+  header.main{
+    background:var(--terracota);
+    background-image: linear-gradient(120deg, var(--terracota) 0%, var(--terracota-claro) 100%);
+    position:sticky;top:0;z-index:50;
+    box-shadow:var(--sombra);
+  }
+  .header-inner{
+    display:flex;align-items:center;gap:32px;
+    height:92px;
+  }
+  .logo{
+    display:flex;align-items:center;gap:12px;
+    color:var(--areia-clara);
+    flex-shrink:0;
+  }
+  .logo-mark{
+    width:46px;height:46px;
+    border:2px solid var(--areia-clara);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    transform:rotate(45deg);
+  }
+  .logo-mark span{transform:rotate(-45deg);}
+  .logo-text{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;letter-spacing:5px;
+  }
+  .logo-text small{
+    display:block;font-family:'Inter',sans-serif;
+    font-size:9px;letter-spacing:3px;font-weight:600;
+    opacity:.85;
+  }
+  .search-box{
+    flex:1;max-width:420px;
+    display:flex;align-items:center;
+    background:rgba(255,255,255,0.94);
+    border-radius:30px;
+    padding:0 18px;height:44px;
+  }
+  .search-box input{
+    border:none;outline:none;background:transparent;
+    flex:1;font-size:14px;padding-left:10px;color:var(--tinta);
+  }
+  nav.main-nav{
+    display:flex;gap:34px;
+    font-weight:700;font-size:14px;letter-spacing:.4px;
+    text-transform:uppercase;
+    color:var(--areia-clara);
+    margin-left:8px;
+  }
+  nav.main-nav a{position:relative;padding:6px 0;transition:opacity .2s;}
+  nav.main-nav a.active::after,
+  nav.main-nav a:hover::after{
+    content:'';position:absolute;left:0;bottom:-4px;width:100%;height:3px;background:var(--dourado);
+  }
+  .header-actions{
+    display:flex;gap:28px;margin-left:auto;flex-shrink:0;
+  }
+  .header-actions a{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+    color:var(--areia-clara);
+  }
+  .header-actions .icon-circle{
+    width:22px;height:22px;
+  }
+  .cart-count{
+    position:absolute;
+    background:var(--verde-escuro);color:#fff;
+    font-size:9px;border-radius:50%;
+    width:16px;height:16px;
+    display:flex;align-items:center;justify-content:center;
+    transform:translate(10px,-8px);
+    font-weight:800;
+  }
+  .burger{display:none;background:transparent;color:var(--areia-clara);}
+
+  /* ===== HERO ===== */
+  .hero{
+    display:grid;grid-template-columns:1fr 1.2fr;
+    min-height:560px;
+  }
+  .hero-text{
+    background:var(--verde);
+    background-image:radial-gradient(circle at 15% 85%, rgba(255,255,255,0.05), transparent 40%);
+    color:var(--areia-clara);
+    display:flex;flex-direction:column;justify-content:center;
+    padding:70px 60px;
+    position:relative;
+  }
+  .hero-eyebrow{
+    font-size:12px;font-weight:800;letter-spacing:4px;
+    color:var(--dourado);margin-bottom:16px;
+  }
+  .hero-text h1{
+    font-size:clamp(30px,3.6vw,48px);
+    color:var(--areia-clara);
+  }
+  .hero-text h1 em{
+    font-style:normal;color:var(--terracota-claro);
+  }
+  .hero-text p{
+    margin-top:22px;font-size:15px;line-height:1.7;max-width:400px;
+    color:rgba(242,234,217,0.85);
+  }
+  .hero-ctas{display:flex;gap:16px;margin-top:34px;}
+  .btn{
+    padding:15px 30px;font-weight:800;font-size:13px;
+    letter-spacing:1px;text-transform:uppercase;
+    border-radius:2px;transition:transform .2s, box-shadow .2s;
+    display:inline-block;
+  }
+  .btn-primary{background:var(--terracota);color:#fff;}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(189,91,52,0.4);}
+  .btn-outline{border:2px solid var(--areia-clara);color:var(--areia-clara);}
+  .btn-outline:hover{background:var(--areia-clara);color:var(--verde);}
+
+  .hero-image{
+    position:relative;
+    background-size:cover;background-position:center;
+    overflow:hidden;
+  }
+  .hero-image img{
+    width:100%;height:100%;object-fit:cover;
+    position:absolute;inset:0;
+  }
+  .hero-image::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(90deg, rgba(47,58,31,0.35), transparent 30%);
+  }
+  .badge-off{
+    position:absolute;right:60px;top:50%;transform:translateY(-50%);
+    width:170px;height:170px;border-radius:50%;
+    background:var(--verde-escuro);
+    color:var(--areia-clara);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;z-index:5;
+    animation:spin 22s linear infinite;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  }
+  .badge-off .pct{font-family:'Anton',sans-serif;font-size:34px;animation:counterspin 22s linear infinite;}
+  .badge-off .sub{font-size:10px;letter-spacing:1px;max-width:110px;animation:counterspin 22s linear infinite;}
+  @keyframes spin{from{transform:translateY(-50%) rotate(0deg);}to{transform:translateY(-50%) rotate(360deg);}}
+  @keyframes counterspin{from{transform:rotate(0deg);}to{transform:rotate(-360deg);}}
+  @media (prefers-reduced-motion: reduce){
+    .badge-off, .badge-off .pct, .badge-off .sub{animation:none;}
+  }
+
+  /* ===== CATEGORIAS ===== */
+  .categories{
+    padding:80px 0 40px;
+  }
+  .section-head{
+    text-align:center;margin-bottom:48px;
+  }
+  .section-head .eyebrow{
+    font-size:12px;font-weight:800;letter-spacing:4px;color:var(--terracota);
+  }
+  .section-head h2{font-size:clamp(26px,3vw,38px);margin-top:10px;color:var(--verde-escuro);}
+  .cat-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:22px;
+  }
+  .cat-card{
+    position:relative;height:280px;border-radius:6px;overflow:hidden;
+    display:flex;align-items:flex-end;
+  }
+  .cat-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .cat-card:hover img{transform:scale(1.08);}
+  .cat-card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(0deg, rgba(33,28,20,0.85) 10%, rgba(33,28,20,0.05) 60%);
+  }
+  .cat-card .cat-label{
+    position:relative;z-index:2;color:#fff;padding:22px;width:100%;
+  }
+  .cat-card .cat-label span{
+    font-size:11px;letter-spacing:2px;color:var(--dourado);font-weight:700;
+  }
+  .cat-card .cat-label h3{font-size:20px;margin-top:6px;}
+
+  /* ===== PRODUTOS ===== */
+  .products{padding:70px 0;background:var(--areia);}
+  .filter-row{
+    display:flex;justify-content:center;gap:10px;margin-bottom:44px;flex-wrap:wrap;
+  }
+  .filter-row button{
+    padding:10px 22px;border-radius:30px;
+    background:transparent;border:2px solid var(--verde);
+    color:var(--verde);font-weight:700;font-size:12px;
+    letter-spacing:.6px;text-transform:uppercase;
+    transition:.2s;
+  }
+  .filter-row button.active,.filter-row button:hover{
+    background:var(--verde);color:var(--areia-clara);
+  }
+  .prod-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:26px;
+  }
+  .prod-card{
+    background:var(--branco);border-radius:8px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(33,28,20,0.06);
+    transition:transform .25s, box-shadow .25s;
+  }
+  .prod-card:hover{transform:translateY(-6px);box-shadow:var(--sombra);}
+  .prod-img{position:relative;height:230px;overflow:hidden;background:var(--areia);}
+  .prod-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .prod-card:hover .prod-img img{transform:scale(1.06);}
+  .prod-tag{
+    position:absolute;top:14px;left:14px;
+    background:var(--terracota);color:#fff;
+    font-size:10px;font-weight:800;letter-spacing:1px;
+    padding:5px 10px;border-radius:3px;text-transform:uppercase;
+  }
+  .prod-wish{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:rgba(255,255,255,0.9);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;color:var(--terracota);
+  }
+  .prod-info{padding:18px 20px 22px;}
+  .prod-info .cat{font-size:11px;color:var(--terracota);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .prod-info h3{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;text-transform:none;letter-spacing:0;margin-top:6px;color:var(--tinta);}
+  .prod-price{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .prod-price .now{font-size:18px;font-weight:800;color:var(--verde-escuro);}
+  .prod-price .old{font-size:13px;color:#999;text-decoration:line-through;}
+  .prod-add{
+    margin-top:14px;width:100%;padding:11px;
+    background:var(--verde-escuro);color:#fff;
+    font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;
+    border-radius:4px;transition:background .2s;
+  }
+  .prod-add:hover{background:var(--terracota);}
+
+  /* ===== PONTOS / FIDELIDADE ===== */
+  .loyalty{
+    display:grid;grid-template-columns:1fr 1fr;
+    background:var(--verde-escuro);
+    color:var(--areia-clara);
+  }
+  .loyalty-text{padding:80px 60px;display:flex;flex-direction:column;justify-content:center;}
+  .loyalty-text .eyebrow{color:var(--dourado);font-size:12px;font-weight:800;letter-spacing:4px;}
+  .loyalty-text h2{font-size:clamp(26px,3vw,36px);margin-top:12px;color:var(--areia-clara);}
+  .loyalty-text p{margin-top:18px;line-height:1.75;color:rgba(242,234,217,0.85);max-width:460px;}
+  .loyalty-steps{margin-top:32px;display:flex;flex-direction:column;gap:18px;}
+  .loyalty-step{display:flex;gap:16px;align-items:flex-start;}
+  .loyalty-step .num{
+    width:34px;height:34px;border-radius:50%;background:var(--terracota);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;
+  }
+  .loyalty-step p{margin:0;font-size:14px;color:rgba(242,234,217,0.9);}
+  .loyalty-img{position:relative;overflow:hidden;}
+  .loyalty-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+
+  /* ===== INSTAGRAM / SOCIAL STRIP ===== */
+  .social-strip{padding:70px 0;}
+  .social-grid{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+  }
+  .social-grid a{position:relative;aspect-ratio:1/1;overflow:hidden;}
+  .social-grid img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+  .social-grid a:hover img{transform:scale(1.1);}
+
+  /* ===== NEWSLETTER ===== */
+  .newsletter{
+    background:var(--terracota);
+    background-image:linear-gradient(120deg, var(--terracota), var(--terracota-claro));
+    padding:60px 0;color:#fff;text-align:center;
+  }
+  .newsletter h2{font-size:clamp(22px,2.6vw,30px);}
+  .newsletter p{margin-top:10px;opacity:.9;font-size:14px;}
+  .newsletter-form{
+    margin:28px auto 0;display:flex;max-width:440px;
+    background:#fff;border-radius:30px;padding:5px;
+  }
+  .newsletter-form input{
+    flex:1;border:none;outline:none;padding:0 18px;font-size:14px;border-radius:30px;
+  }
+  .newsletter-form button{
+    background:var(--verde-escuro);color:#fff;padding:12px 26px;
+    border-radius:30px;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{background:var(--verde-escuro);color:rgba(242,234,217,0.8);padding:70px 0 0;}
+  .footer-grid{
+    display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:50px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .footer-grid h4{
+    color:var(--areia-clara);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;
+  }
+  .footer-grid ul li{margin-bottom:12px;font-size:14px;}
+  .footer-grid ul li a:hover{color:var(--terracota-claro);}
+  .footer-about p{font-size:14px;line-height:1.7;max-width:280px;}
+  .footer-social{display:flex;gap:12px;margin-top:20px;}
+  .footer-social a{
+    width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.25);
+    display:flex;align-items:center;justify-content:center;transition:.2s;
+  }
+  .footer-social a:hover{background:var(--terracota);border-color:var(--terracota);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:24px 0;font-size:12px;flex-wrap:wrap;gap:10px;
+  }
+
+  /* ===== RESPONSIVO ===== */
+  @media (max-width:1024px){
+    .hero{grid-template-columns:1fr;}
+    .hero-image{min-height:340px;}
+    .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .social-grid{grid-template-columns:repeat(3,1fr);}
+    .loyalty{grid-template-columns:1fr;}
+    .loyalty-img{min-height:300px;}
+  }
+  @media (max-width:760px){
+    .topbar .container{font-size:11px;}
+    .topbar-left span:nth-child(2){display:none;}
+    nav.main-nav, .search-box{display:none;}
+    .header-inner{height:70px;}
+    .header-actions{gap:16px;}
+    .burger{display:block;font-size:22px;}
+    .cat-grid,.prod-grid{grid-template-columns:1fr;}
+    .hero-text{padding:50px 28px;}
+    .badge-off{right:24px;width:120px;height:120px;}
+    .badge-off .pct{font-size:24px;}
+  }
+
+  :focus-visible{outline:3px solid var(--dourado);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-left">
+      <span class="flag">🇧🇷</span>
+      <span>📞 (41) 98556-6333</span>
+      <span>✉️ lojamichezo@gmail.com</span>
+    </div>
+    <div class="topbar-social">
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="Facebook">FB</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="main">
+  <div class="container header-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark"><span>M</span></div>
+      <div class="logo-text">MICHEZO<small>vista o movimento</small></div>
+    </a>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="O que você está procurando?">
+    </div>
+    <nav class="main-nav">
+      <a href="#inicio" class="active">Início</a>
+      <a href="#pontos">Pontos</a>
+      <a href="produtos.html">Produtos</a>
+    </nav>
+    <div class="header-actions">
+      <a href="login.html"><span>👤</span>Minha Conta</a>
+      <a href="carrinho.html " style="position:relative;"><span>🛒<span class="cart-count">3</span></span>Meu Carrinho</a>
+    </div>
+    <button class="burger" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-text">
+    <div class="hero-eyebrow">TREINE COM RAIZ</div>
+    <h1>Cuide do seu corpo todos os dias. <em>Nós vestimos</em> o seu movimento em cada passo.</h1>
+    <p>Roupas e equipamentos de treino inspirados na força e nos padrões da nossa cultura. Colecione pontos treinando e ganhe descontos, brindes ou peças sem custo.</p>
+    <div class="hero-ctas">
+      <a href="produtos.html" class="btn btn-primary">Ver Produtos</a>
+      <a href="#pontos" class="btn btn-outline">Como funciona os pontos</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1400&auto=format&fit=crop" alt="Atleta treinando com roupas esportivas Michezo">
+    <div class="badge-off">
+      <span class="pct">10% OFF</span>
+      <span class="sub">SUA PRIMEIRA COMPRA</span>
+    </div>
+  </div>
+</section>
+
+<div class="zigzag-divider"></div>
+
+<!-- CATEGORIAS -->
+<section class="categories">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">EXPLORE</div>
+      <h2>Compre por categoria</h2>
+    </div>
+    <div class="cat-grid">
+      <a class="cat-card" href="produtos.html">
+        <img src="https://images.unsplash.com/photo-1483721310020-03333e577078?q=80&w=800&auto=format&fit=crop" alt="Leggings e tops">
+        <div class="cat-label"><span>FEMININO</span><h3>Leggings & Tops</h3></div>
+      </a>
+      <a class="cat-card" href="produtos.html">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop" alt="Regatas e shorts masculinos">
+        <div class="cat-label"><span>MASCULINO</span><h3>Regatas & Shorts</h3></div>
+      </a>
+      <a class="cat-card" href="produtos.html">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" alt="Tênis de treino">
+        <div class="cat-label"><span>CALÇADOS</span><h3>Tênis de Treino</h3></div>
+      </a>
+      <a class="cat-card" href="produtos.html">
+        <img src="https://images.unsplash.com/photo-1517964603305-4527095701fc?q=80&w=800&auto=format&fit=crop" alt="Equipamentos de academia">
+        <div class="cat-label"><span>EQUIPAMENTOS</span><h3>Halteres & Faixas</h3></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUTOS -->
+<section class="products" id="produtos">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">CATÁLOGO</div>
+      <h2>Mais vendidos</h2>
+    </div>
+    <div class="filter-row">
+      <button class="active">Todos</button>
+      <button>Roupas</button>
+      <button>Calçados</button>
+      <button>Equipamentos</button>
+      <button>Acessórios</button>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card">
+        <div class="prod-img">
+          <span class="prod-tag">Novo</span>
+          <span class="prod-wish">♡</span>
+          <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?q=80&w=600&auto=format&fit=crop" alt="Legging estampada Ankara">
+        </div>
+        <div class="prod-info">
+          <div class="cat">Feminino</div>
+          <h3>Legging Estampa Ankara</h3>
+          <div class="prod-price"><span class="now">R$ 149,90</span><span class="old">R$ 179,90</span></div>
+          <button class="prod-add">Adicionar ao carrinho</button>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-img">
+          <span class="prod-tag">-15%</span>
+          <span class="prod-wish">♡</span>
+          <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=600&auto=format&fit=crop" alt="Regata dry fit masculina">
+        </div>
+        <div class="prod-info">
+          <div class="cat">Masculino</div>
+          <h3>Regata Dry Fit Performance</h3>
+          <div class="prod-price"><span class="now">R$ 89,90</span><span class="old">R$ 104,90</span></div>
+          <button class="carrinho.html">Adicionar ao carrinho</button>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-img">
+          <span class="prod-tag">Top</span>
+          <span class="prod-wish">♡</span>
+          <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=600&auto=format&fit=crop" alt="Tênis de treino funcional">
+        </div>
+        <div class="prod-info">
+          <div class="cat">Calçados</div>
+          <h3>Tênis Treino Funcional</h3>
+          <div class="prod-price"><span class="now">R$ 289,90</span></div>
+          <button class="prod-add">Adicionar ao carrinho</button>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-img">
+          <span class="prod-tag">Kit</span>
+          <span class="prod-wish">♡</span>
+          <img src="https://images.unsplash.com/photo-1584735175315-9d5df23860e6?q=80&w=600&auto=format&fit=crop" alt="Kit de faixas elásticas">
+        </div>
+        <div class="prod-info">
+          <div class="cat">Equipamentos</div>
+          <h3>Kit Faixas Elásticas (5un)</h3>
+          <div class="prod-price"><span class="now">R$ 69,90</span></div>
+          <button class="prod-add">Adicionar ao carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PONTOS -->
+<section class="loyalty" id="pontos">
+  <div class="loyalty-text">
+    <div class="eyebrow">PROGRAMA MICHEZO</div>
+    <h2>Cada treino te aproxima de uma peça nova</h2>
+    <p>Colecione pontos fazendo exercícios e ganhe descontos especiais, brindes ou até mesmo uma peça sem custo. Movimento é a nossa moeda.</p>
+    <div class="loyalty-steps">
+      <div class="loyalty-step">
+        <div class="num">1</div>
+        <p>Cadastre sua conta e conecte seu app de treino ou registre suas atividades manualmente.</p>
+      </div>
+      <div class="loyalty-step">
+        <div class="num">2</div>
+        <p>Ganhe pontos a cada treino registrado e a cada compra realizada na loja.</p>
+      </div>
+      <div class="loyalty-step">
+        <div class="num">3</div>
+        <p>Troque seus pontos por descontos, brindes exclusivos ou peças completas.</p>
+      </div>
+    </div>
+    <a href="#" class="btn btn-primary" style="margin-top:32px;width:fit-content;">Quero participar</a>
+  </div>
+  <div class="loyalty-img wax-pattern">
+    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop" alt="Pessoa treinando ao ar livre">
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<section class="social-strip">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">@MICHEZO</div>
+      <h2>Siga nosso movimento</h2>
+    </div>
+  </div>
+  <div class="social-grid">
+    <a href="#"><img src="https://images.unsplash.com/photo-1571731956672-f2b94d7dd0cb?q=80&w=400&auto=format&fit=crop" alt="Treino comunidade"></a>
+    <a href="#"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=400&auto=format&fit=crop" alt="Corrida ao ar livre"></a>
+    <a href="#"><img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?q=80&w=400&auto=format&fit=crop" alt="Treino funcional"></a>
+    <a href="#"><img src="https://images.unsplash.com/photo-1518459031867-a89b944bffe4?q=80&w=400&auto=format&fit=crop" alt="Alongamento"></a>
+    <a href="#"><img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=400&auto=format&fit=crop" alt="Levantamento de peso"></a>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="container">
+    <h2>Receba novidades e cupons exclusivos</h2>
+    <p>Assine e ganhe 10% de desconto na primeira compra.</p>
+    <form class="newsletter-form" id="newsletterForm">
+      <input type="email" placeholder="Seu melhor e-mail" required>
+      <button type="submit">Assinar</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <div class="logo" style="margin-bottom:18px;">
+          <div class="logo-mark"><span>M</span></div>
+          <div class="logo-text">MICHEZO</div>
+        </div>
+        <p>Roupas e equipamentos de academia inspirados na cultura e na força do movimento. Treine com identidade.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="WhatsApp">WA</a>
+        </div>
+      </div>
+      <div>
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="#">Sobre a Michezo</a></li>
+          <li><a href="#">Trocas e devoluções</a></li>
+          <li><a href="#">Política de privacidade</a></li>
+          <li><a href="#">Fale conosco</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Categorias</h4>
+        <ul>
+          <li><a href="#">Feminino</a></li>
+          <li><a href="#">Masculino</a></li>
+          <li><a href="#">Calçados</a></li>
+          <li><a href="#">Equipamentos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          <li>📞 (41) 98556-6333</li>
+          <li>✉️ lojamichezo@gmail.com</li>
+          <li>📍 Curitiba, PR</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Michezo. Todos os direitos reservados.</span>
+      <span>Feito com força e propósito.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Filtro de categorias de produtos
+  const filterButtons = document.querySelectorAll('.filter-row button');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Wishlist toggle
+  document.querySelectorAll('.prod-wish').forEach(w => {
+    w.addEventListener('click', (e) => {
+      e.preventDefault();
+      w.textContent = w.textContent.trim() === '♡' ? '♥' : '♡';
+      w.style.color = w.textContent === '♥' ? '#bd5b34' : '';
+    });
+  });
+
+  // Contador do carrinho
+  let cartCount = 3;
+  document.querySelectorAll('.prod-add').forEach(btn => {
+    btn.addEventListener('click', () => {
+      cartCount++;
+      document.querySelector('.cart-count').textContent = cartCount;
+      btn.textContent = 'Adicionado ✓';
+      setTimeout(() => btn.textContent = 'Adicionar ao carrinho', 1200);
+    });
+  });
+
+  // Newsletter
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = this.querySelector('button');
+    btn.textContent = 'Inscrito! 🎉';
+    this.querySelector('input').value = '';
+    setTimeout(() => btn.textContent = 'Assinar', 2000);
+  });
+
+  // Header ativo por scroll
+  const navLinks = document.querySelectorAll('.main-nav a');
+  const sections = ['inicio','pontos','produtos'].map(id => document.getElementById(id));
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    sections.forEach(sec => { if (window.scrollY >= sec.offsetTop - 150) current = sec; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
+  });
+</script>
+
+</body>
+</html>

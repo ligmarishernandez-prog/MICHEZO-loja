@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michezo — Performance que veste bem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1a16;
+    --terracotta:#b5502e;
+    --terracotta-dark:#8f3d22;
+    --olive:#4a4a2a;
+    --paper:#f3ede1;
+    --paper-dark:#e7ded0;
+    --gold:#d9a441;
+    --line: rgba(28,26,22,0.12);
+    --radius: 2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Work Sans', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{
+    font-family:'Anton', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+
+  /* ===== TOP UTILITY BAR ===== */
+  .topbar{
+    background:var(--ink);
+    color:#e9e4d8;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.03em;
+  }
+  .topbar-inner{
+    max-width:1240px;
+    margin:0 auto;
+    padding:8px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .topbar-left{display:flex; gap:20px; align-items:center; opacity:0.85;}
+  .topbar-left a{color:inherit; text-decoration:none;}
+  .topbar-right{display:flex; gap:14px;}
+  .topbar-right a{
+    color:#e9e4d8; text-decoration:none;
+    width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(233,228,216,0.3); border-radius:50%;
+    transition: all .2s ease;
+  }
+  .topbar-right a:hover{ background:var(--terracotta); border-color:var(--terracotta);}
+
+  /* ===== MAIN NAV ===== */
+  header.mainnav{
+    background: linear-gradient(180deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  header.mainnav::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:6px;
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.15) 0 8px, transparent 8px 16px);
+  }
+  .nav-inner{
+    max-width:1240px;
+    margin:0 auto;
+    padding:20px 24px 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .logo{
+    display:flex; align-items:center; gap:12px;
+  }
+  .logo-mark{
+    width:46px; height:46px;
+    border:2px solid #fff;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Anton', sans-serif;
+    font-size:22px;
+    flex-shrink:0;
+  }
+  .logo-text{
+    font-family:'Anton', sans-serif;
+    font-size:26px;
+    letter-spacing:0.18em;
+    line-height:1;
+  }
+  .logo-text span{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9px;
+    letter-spacing:0.35em;
+    opacity:0.75;
+    margin-top:4px;
+  }
+
+  .search{
+    flex:1 1 320px;
+    max-width:420px;
+    position:relative;
+  }
+  .search input{
+    width:100%;
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.35);
+    border-radius:999px;
+    padding:11px 44px 11px 18px;
+    color:#fff;
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+  }
+  .search input::placeholder{ color:rgba(255,255,255,0.7); }
+  .search input:focus{ outline:2px solid #fff; outline-offset:2px; background:rgba(255,255,255,0.22); }
+  .search svg{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; opacity:0.85;
+  }
+
+  nav.links{
+    display:flex; gap:28px; align-items:center;
+    font-size:13px; font-weight:600; letter-spacing:0.06em;
+  }
+  nav.links a{
+    color:#fff; text-decoration:none; opacity:0.82;
+    padding-bottom:4px; border-bottom:2px solid transparent;
+    transition: all .2s ease;
+    text-transform:uppercase;
+  }
+  nav.links a:hover, nav.links a.active{ opacity:1; border-color:var(--gold); }
+
+  .nav-actions{ display:flex; gap:28px; align-items:center; }
+  .nav-action{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    color:#fff; text-decoration:none; font-size:10.5px; font-weight:600;
+    letter-spacing:0.08em; text-transform:uppercase; opacity:0.9;
+    background:none; border:none; cursor:pointer; font-family:inherit;
+    position:relative;
+  }
+  .nav-action:hover{ opacity:1; }
+  .nav-action svg{ width:22px; height:22px; }
+  .cart-count{
+    position:absolute; top:-6px; right:-10px;
+    background:var(--gold); color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; font-weight:700;
+    width:17px; height:17px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ===== SIGNATURE STRIP: STITCH BANNER ===== */
+  .stitch-banner{
+    background:var(--olive);
+    color:#eee7d6;
+    padding:10px 24px;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    border-top:1px dashed rgba(238,231,214,0.35);
+    border-bottom:1px dashed rgba(238,231,214,0.35);
+  }
+
+  /* ===== PAGE HEADER ===== */
+  .page-head{
+    max-width:1240px;
+    margin:0 auto;
+    padding:40px 24px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .page-head h1{
+    font-size:clamp(32px, 4.5vw, 52px);
+    line-height:0.95;
+  }
+  .page-head .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    color:var(--terracotta-dark);
+    text-transform:uppercase;
+    margin-bottom:10px;
+    display:block;
+  }
+  .filters{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .filters button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.05em;
+    padding:8px 16px;
+    border:1px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .2s ease;
+    text-transform:uppercase;
+  }
+  .filters button:hover{ background:var(--ink); color:var(--paper); }
+  .filters button.active{ background:var(--terracotta); border-color:var(--terracotta); color:#fff; }
+
+  /* ===== PRODUCT GRID ===== */
+  .grid-wrap{ max-width:1240px; margin:0 auto; padding:20px 24px 80px; }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px 22px;
+  }
+  @media (max-width: 900px){ .grid{ grid-template-columns:repeat(2, 1fr);} }
+  @media (max-width: 560px){ .grid{ grid-template-columns:1fr;} }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    position:relative;
+    display:flex; flex-direction:column;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{ transform:translateY(-5px); box-shadow:0 14px 30px rgba(28,26,22,0.14); }
+  .card-tag{
+    position:absolute; top:12px; left:12px;
+    background:var(--ink); color:var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:0.08em;
+    padding:4px 9px; text-transform:uppercase;
+    z-index:2;
+  }
+  .card-img{
+    aspect-ratio:1/1;
+    background:#e9e2d3;
+    overflow:hidden;
+    position:relative;
+  }
+  .card-img img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .4s ease;
+  }
+  .card:hover .card-img img{ transform:scale(1.06); }
+  .quick-add{
+    position:absolute; left:0; right:0; bottom:0;
+    background:rgba(28,26,22,0.88);
+    color:#fff;
+    text-align:center;
+    padding:10px;
+    font-size:12px; font-weight:600; letter-spacing:0.06em;
+    text-transform:uppercase;
+    border:none; width:100%; cursor:pointer;
+    transform:translateY(100%);
+    transition:transform .25s ease;
+    font-family:'Work Sans', sans-serif;
+  }
+  .card:hover .quick-add{ transform:translateY(0); }
+  .quick-add:hover{ background:var(--terracotta); }
+
+  .card-body{
+    padding:16px 16px 18px;
+    display:flex; flex-direction:column; gap:10px; flex:1;
+  }
+  .card-name{
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.35;
+    min-height:36px;
+  }
+  .card-foot{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:auto;
+  }
+  .price{
+    font-family:'JetBrains Mono', monospace;
+    background:var(--terracotta);
+    color:#fff;
+    padding:6px 12px;
+    font-size:13px;
+    font-weight:700;
+    border-radius:999px;
+  }
+  .swatches{ display:flex; gap:5px; }
+  .swatch{
+    width:13px; height:13px; border-radius:50%;
+    border:1px solid rgba(0,0,0,0.2);
+  }
+
+  /* ===== NEWSLETTER / SIGNATURE FOOTER BAND ===== */
+  .band{
+    background:var(--terracotta);
+    color:#fff;
+    padding:46px 24px;
+  }
+  .band-inner{
+    max-width:1240px; margin:0 auto;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:20px;
+  }
+  .band h2{ font-size:clamp(22px,3vw,32px); max-width:480px; line-height:1.1; }
+  .band form{ display:flex; gap:0; max-width:380px; width:100%; }
+  .band input{
+    flex:1; border:none; padding:13px 16px; font-family:'Work Sans', sans-serif; font-size:14px;
+  }
+  .band button{
+    background:var(--ink); color:#fff; border:none; padding:0 22px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer;
+  }
+  .band button:hover{ background:#000; }
+
+  footer{
+    background:var(--olive);
+    color:#eee7d6;
+  }
+  .footer-inner{
+    max-width:1240px; margin:0 auto; padding:44px 24px 24px;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:30px;
+  }
+  @media (max-width:700px){ .footer-inner{ grid-template-columns:1fr 1fr; } }
+  .footer-inner h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    margin-bottom:14px; color:var(--gold);
+  }
+  .footer-inner ul{ list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .footer-inner a{ color:#eee7d6; text-decoration:none; font-size:13.5px; opacity:0.85; }
+  .footer-inner a:hover{ opacity:1; text-decoration:underline; }
+  .footer-bottom{
+    border-top:1px dashed rgba(238,231,214,0.3);
+    text-align:center; padding:16px; font-size:11.5px; opacity:0.7;
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ===== CART DRAWER ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(28,26,22,0.5);
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+    z-index:40;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(380px, 92vw);
+    background:var(--paper); z-index:50;
+    transform:translateX(100%); transition:transform .35s ease;
+    display:flex; flex-direction:column;
+    box-shadow:-8px 0 30px rgba(0,0,0,0.2);
+  }
+  .drawer.open{ transform:translateX(0); }
+  .drawer-head{
+    background:var(--ink); color:#fff; padding:20px 22px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .drawer-head h3{ font-family:'Anton', sans-serif; letter-spacing:0.05em; }
+  .drawer-head button{ background:none; border:none; color:#fff; font-size:22px; cursor:pointer; }
+  .drawer-items{ flex:1; overflow-y:auto; padding:18px 22px; display:flex; flex-direction:column; gap:14px; }
+  .drawer-item{ display:flex; gap:12px; align-items:center; border-bottom:1px solid var(--line); padding-bottom:14px; }
+  .drawer-item img{ width:56px; height:56px; object-fit:cover; border-radius:4px; }
+  .drawer-item-info{ flex:1; }
+  .drawer-item-info .n{ font-size:13px; font-weight:600; }
+  .drawer-item-info .p{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--terracotta-dark); }
+  .drawer-item button{ background:none; border:none; color:var(--ink); opacity:0.5; cursor:pointer; font-size:13px; }
+  .drawer-item button:hover{ opacity:1; color:var(--terracotta); }
+  .drawer-foot{ padding:20px 22px; border-top:1px solid var(--line); }
+  .drawer-foot .total{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:14px; font-family:'JetBrains Mono', monospace; }
+  .drawer-foot button.checkout{
+    width:100%; background:var(--terracotta); color:#fff; border:none; padding:14px;
+    font-family:'Work Sans', sans-serif; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    cursor:pointer; border-radius:999px;
+  }
+  .drawer-foot button.checkout:hover{ background:var(--terracotta-dark); }
+  .empty-cart{ text-align:center; opacity:0.6; font-size:13px; padding:40px 0; font-family:'JetBrains Mono', monospace; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:12px 22px; border-radius:999px;
+    font-size:13px; font-weight:600; opacity:0; transition:all .3s ease; z-index:60;
+    pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <span>🇧🇷 (41) 98556-6333</span>
+      <a href="mailto:lojamichezo@gmail.com">lojamichezo@gmail.com</a>
+    </div>
+    <div class="topbar-right">
+      <a href="#" aria-label="Instagram">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      </a>
+      <a href="#" aria-label="Facebook">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<header class="mainnav">
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-mark">M</div>
+      <div class="logo-text">MICHEZO<span>PERFORMANCE WEAR</span></div>
+    </div>
+    <div class="search">
+      <input id="searchInput" type="text" placeholder="O que você está procurando?">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </div>
+    <nav class="links">
+      <a href="index.html" class="active">Início</a>
+      <a href="#">Informações</a>
+      <a href="produtos.html">Produtos</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-action" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>
+        Minha conta
+      </button>
+      <button class="nav-action" id="cartBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L22 7H6"/></svg>
+        Meu carrinho
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="stitch-banner">— FRETE GRÁTIS ACIMA DE R$300 · TROCA GRÁTIS EM 30 DIAS · TECIDO DRY FIT PREMIUM —</div>
+
+<div class="page-head" id="produtos">
+  <div>
+    <span class="eyebrow">Coleção atual</span>
+    <h1 class="display">Feito pra suar<br>a camisa</h1>
+  </div>
+  <div class="filters" id="filters">
+    <button class="active" data-cat="todos">Todos</button>
+    <button data-cat="conjunto">Conjuntos</button>
+    <button data-cat="shorts">Shorts</button>
+    <button data-cat="calca">Calças</button>
+    <button data-cat="moletom">Moletons</button>
+  </div>
+</div>
+
+<div class="grid-wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="band">
+  <div class="band-inner">
+    <h2 class="display">Receba 10% off na<br>primeira compra</h2>
+    <form id="newsForm">
+      <input type="email" placeholder="seu@email.com" required>
+      <button type="submit">Quero desconto</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h3>Michezo</h3>
+      <p style="font-size:13.5px; opacity:0.85; max-width:280px; line-height:1.6;">Roupas fitness com tecido dry fit e caimento pensado pra treino de verdade. Curitiba, PR.</p>
+    </div>
+    <div>
+      <h3>Loja</h3>
+      <ul>
+        <li><a href="#">Conjuntos</a></li>
+        <li><a href="#">Shorts</a></li>
+        <li><a href="#">Calças</a></li>
+        <li><a href="#">Moletons</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ajuda</h3>
+      <ul>
+        <li><a href="#">Trocas e devoluções</a></li>
+        <li><a href="#">Guia de tamanhos</a></li>
+        <li><a href="#">Rastrear pedido</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <ul>
+        <li><a href="tel:4198556633">(41) 98556-6333</a></li>
+        <li><a href="mailto:lojamichezo@gmail.com">lojamichezo@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 MICHEZO — TODOS OS DIREITOS RESERVADOS</div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>SEU CARRINHO</h3>
+    <button id="closeDrawer" aria-label="Fechar">&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="total"><span>TOTAL</span><span id="cartTotal">R$0,00</span></div>
+    <button class="checkout">Finalizar compra</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Adicionado ao carrinho ✓</div>
+
+<script>
+const products = [
+  { id:1, name:"Conjunto fitness poliamida premium com elastano", price:190, cat:"conjunto", img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80", colors:["#1c1a16","#8a8a8a","#e9e2d3"], tag:"Novo" },
+  { id:2, name:"Short Fitness Curto Motion — Kit 3 shorts", price:195, cat:"shorts", img:"https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&q=80", colors:["#4a4a2a","#7a1f2b","#2f4a2f"], tag:"Kit" },
+  { id:3, name:"Kit 3 Shorts Insider tecido leve", price:185, cat:"shorts", img:"https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80", colors:["#1e3a8a","#e9e2d3"], tag:"Kit" },
+  { id:4, name:"Calça Legging Insider Run Easy", price:180, cat:"calca", img:"https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80", colors:["#1c1a16"], tag:"" },
+  { id:5, name:"Calça Miler Woven com bolsos laterais", price:170, cat:"calca", img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&q=80", colors:["#1c1a16","#4a4a2a"], tag:"" },
+  { id:6, name:"Moletom Unissex Dry Fit com capuz", price:200, cat:"moletom", img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80", colors:["#1c1a16","#7a1f2b"], tag:"Mais vendido" },
+];
+
+const grid = document.getElementById('grid');
+const filters = document.getElementById('filters');
+const searchInput = document.getElementById('searchInput');
+let cart = [];
+let activeCat = 'todos';
+
+function money(v){ return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); }
+
+function renderGrid(){
+  const q = searchInput.value.trim().toLowerCase();
+  const list = products.filter(p => (activeCat==='todos' || p.cat===activeCat) && p.name.toLowerCase().includes(q));
+  grid.innerHTML = list.map(p => `
+    <div class="card">
+      ${p.tag ? `<div class="card-tag">${p.tag}</div>` : ''}
+      <div class="card-img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <button class="quick-add" data-id="${p.id}">+ Adicionar rápido</button>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="swatches">${p.colors.map(c=>`<span class="swatch" style="background:${c}"></span>`).join('')}</div>
+        <div class="card-foot">
+          <span class="price">${money(p.price)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('') || `<p class="empty-cart" style="grid-column:1/-1;">Nenhum produto encontrado.</p>`;
+}
+
+filters.addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  filters.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  renderGrid();
+});
+searchInput.addEventListener('input', renderGrid);
+
+grid.addEventListener('click', e=>{
+  const btn = e.target.closest('.quick-add');
+  if(!btn) return;
+  addToCart(parseInt(btn.dataset.id));
+});
+
+const drawer = document.getElementById('drawer');
+const overlay = document.getElementById('overlay');
+const cartBtn = document.getElementById('cartBtn');
+const closeDrawer = document.getElementById('closeDrawer');
+const drawerItems = document.getElementById('drawerItems');
+const cartTotal = document.getElementById('cartTotal');
+const cartCount = document.getElementById('cartCount');
+const toast = document.getElementById('toast');
+
+function addToCart(id){
+  const p = products.find(x=>x.id===id);
+  const existing = cart.find(x=>x.id===id);
+  if(existing){ existing.qty++; } else { cart.push({...p, qty:1}); }
+  renderCart();
+  showToast();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(x=>x.id!==id);
+  renderCart();
+}
+
+function renderCart(){
+  cartCount.textContent = cart.reduce((s,i)=>s+i.qty,0);
+  drawerItems.innerHTML = cart.length ? cart.map(i=>`
+    <div class="drawer-item">
+      <img src="${i.img}" alt="${i.name}">
+      <div class="drawer-item-info">
+        <div class="n">${i.name}</div>
+        <div class="p">${i.qty} × ${money(i.price)}</div>
+      </div>
+      <button data-id="${i.id}">remover</button>
+    </div>
+  `).join('') : `<div class="empty-cart">Seu carrinho está vazio.</div>`;
+  const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+  cartTotal.textContent = money(total);
+}
+
+drawerItems.addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-id]');
+  if(!btn) return;
+  removeFromCart(parseInt(btn.dataset.id));
+});
+
+function openDrawer(){ drawer.classList.add('open'); overlay.classList.add('open'); }
+function closeDrawerFn(){ drawer.classList.remove('open'); overlay.classList.remove('open'); }
+cartBtn.addEventListener('click', openDrawer);
+closeDrawer.addEventListener('click', closeDrawerFn);
+overlay.addEventListener('click', closeDrawerFn);
+
+function showToast(){
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>toast.classList.remove('show'), 1800);
+}
+
+document.getElementById('newsForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  e.target.querySelector('input').value='';
+  toast.textContent = 'Cupom enviado pro seu e-mail ✓';
+  showToast();
+  setTimeout(()=>{ toast.textContent='Adicionado ao carrinho ✓'; }, 2000);
+});
+
+renderGrid();
+renderCart();
+</script>
+</body>
+</html>
